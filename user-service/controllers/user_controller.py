@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status, Body, Request
 from sqlmodel import Session, select
 from config.db import get_session
-from schemas.user_schemas import AvatarResponse, ChangePasswordRequest, ForgotPasswordRequest, ResetPasswordRequest, UpdateMeRequest, UserCreate, UserDetail,MessageResponse
+from schemas.user_schemas import AvatarResponse, ChangePasswordRequest, ForgotPasswordRequest, PublicUserProfile, ResetPasswordRequest, UpdateMeRequest, UserCreate, UserDetail,MessageResponse
 from models.users import User
-from services.user_service import change_password, create_user, get_me, reset_password, send_password_reset_otp, update_avatar, update_me, verify_otp, resend_otp
+from services.user_service import change_password, create_user, get_me, reset_password, send_password_reset_otp, update_avatar, update_me, verify_otp, resend_otp , get_public_profile 
 from rate_limiting import limiter
 from utils.auth import get_current_user
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -83,3 +83,8 @@ async def upload_avatar(
 ):
     avatar_url = update_avatar(user, file.file, db)
     return AvatarResponse(avatar_url=avatar_url)
+
+@router.get("/{username}", response_model=PublicUserProfile)
+def public_profile(username: str, db: Session = Depends(get_session)):
+    profile = get_public_profile(username, db)
+    return profile

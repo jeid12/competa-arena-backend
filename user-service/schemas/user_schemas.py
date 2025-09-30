@@ -99,3 +99,13 @@ class MessageResponse(BaseModel):
 class AvatarResponse(BaseModel):
     avatar_url: str
 
+class PublicUserProfile(BaseModel):
+    username: str
+    name: str
+    country: str
+    gender: str
+    profile_photo_url: Optional[str]
+    role: str
+    creator_application_status: str
+    status: str
+    # Optionally: standing, ranking, etc.

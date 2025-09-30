@@ -117,3 +117,20 @@ def update_avatar(user: User, file, db: Session):
     db.commit()
     db.refresh(user)
     return avatar_url
+
+def get_public_profile(username: str, db: Session):
+    user = db.exec(select(User).where(User.username == username)).first()
+    if not user:
+        raise HTTPException(404, "User not found")
+    # Only return public fields
+    return {
+        "username": user.username,
+        "name": user.name,
+        "country": user.country,
+        "gender": user.gender,
+        "profile_photo_url": user.profile_photo_url,
+        "role": user.role,
+        "creator_application_status": user.creator_application_status,
+        "status": user.status,
+        # Optionally: current standing, ranking, etc.
+    }

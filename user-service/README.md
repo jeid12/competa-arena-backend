@@ -267,4 +267,11 @@ def test_apply_creator():
 
 ---
 
-**If you follow this blueprint, your User Service will be robust, scalable, and ready for integration with the broader Competa Arena platform!**
+
+## some addtional thing to note to use this
+ - already we have token refresh stored in cookies and the way logout is implement it remove that cookies refresh and the access token must be removed on frontend
+    - the admin role is assigned directly in the db for now
+-the user by default is user only can also apply for being creator
+- admin has been seeded and you can seed him / her as well
+
+on production you need to configure yaml file as well to take env from your server

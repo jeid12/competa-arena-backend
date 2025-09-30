@@ -61,3 +61,16 @@ def apply_creator_endpoint(
 ):
     apply_creator(user, db)
     return {"message": "Creator application submitted and is now pending admin review."}
+
+
+@router.post("/logout", status_code=status.HTTP_200_OK)
+def logout(response: Response):
+    # Remove refresh token cookie by setting it to empty and expiring it
+    response.delete_cookie(
+        key="refresh_token",
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        path="/"
+    )
+    return {"message": "Logged out successfully"}
