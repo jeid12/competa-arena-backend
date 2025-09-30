@@ -109,3 +109,11 @@ def change_password(user: User, old_password: str, new_password: str, db: Sessio
     db.add(user)
     db.commit()
     return True
+
+def update_avatar(user: User, file, db: Session):
+    avatar_url = upload_profile_photo(file, public_id=f"user_{user.id}")
+    user.profile_photo_url = avatar_url
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return avatar_url

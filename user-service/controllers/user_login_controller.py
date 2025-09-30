@@ -2,9 +2,11 @@ from fastapi import APIRouter, Depends, status, Response, Request, HTTPException
 from sqlmodel import Session
 from config.db import get_session
 from schemas.user_schemas import UserLogin, TokenResponse
-from services.user_login import authenticate_user
-from utils.auth import decode_refresh_token, create_access_token, create_refresh_token
+from services.user_login import apply_creator, authenticate_user
+from utils.auth import decode_refresh_token, create_access_token, create_refresh_token, get_current_user
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
+security = HTTPBearer()
 router = APIRouter()
 
 @router.post("/login", response_model=TokenResponse)
@@ -51,3 +53,11 @@ def refresh_token(request: Request, response: Response):
         max_age=7*24*60*60
     )
     return TokenResponse(access_token=access_token)
+
+@router.post("/me/apply-creator", status_code=status.HTTP_200_OK, dependencies=[Depends(security)])
+def apply_creator_endpoint(
+    db: Session = Depends(get_session),
+    user=Depends(get_current_user)
+):
+    apply_creator(user, db)
+    return {"message": "Creator application submitted and is now pending admin review."}

@@ -27,3 +27,16 @@ def authenticate_user(username_or_email: str, password: str, db: Session):
     access_token = create_access_token(claims)
     refresh_token = create_refresh_token(claims)
     return access_token, refresh_token
+
+def apply_creator(user: User, db: Session):
+    if user.role != "user":
+        raise HTTPException(403, "Only users can apply for creator role")
+    if user.creator_application_status == "pending":
+        raise HTTPException(400, "Creator application already pending")
+    if user.creator_application_status == "approved":
+        raise HTTPException(400, "Already approved as creator")
+    user.creator_application_status = "pending"
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return True

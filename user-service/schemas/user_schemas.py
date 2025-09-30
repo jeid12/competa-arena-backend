@@ -94,3 +94,8 @@ class UpdateMeRequest(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+
+
+class AvatarResponse(BaseModel):
+    avatar_url: str
+

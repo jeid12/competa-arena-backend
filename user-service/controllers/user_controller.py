@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body, Request
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status, Body, Request
 from sqlmodel import Session, select
 from config.db import get_session
-from schemas.user_schemas import ChangePasswordRequest, ForgotPasswordRequest, ResetPasswordRequest, UpdateMeRequest, UserCreate, UserDetail,MessageResponse
+from schemas.user_schemas import AvatarResponse, ChangePasswordRequest, ForgotPasswordRequest, ResetPasswordRequest, UpdateMeRequest, UserCreate, UserDetail,MessageResponse
 from models.users import User
-from services.user_service import change_password, create_user, get_me, reset_password, send_password_reset_otp, update_me, verify_otp, resend_otp
+from services.user_service import change_password, create_user, get_me, reset_password, send_password_reset_otp, update_avatar, update_me, verify_otp, resend_otp
 from rate_limiting import limiter
 from utils.auth import get_current_user
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -73,3 +73,13 @@ def change_password_endpoint(
 ):
     change_password(user, req.old_password, req.new_password, db)
     return {"message": "Password changed successfully"}
+
+
+@router.post("/me/avatar", response_model=AvatarResponse, status_code=status.HTTP_200_OK , dependencies = [Depends(security)])
+async def upload_avatar(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_session),
+    user=Depends(get_current_user)
+):
+    avatar_url = update_avatar(user, file.file, db)
+    return AvatarResponse(avatar_url=avatar_url)
