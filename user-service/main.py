@@ -17,7 +17,7 @@ origins = [
 load_dotenv()
 
 #initialize an app
-app=FastAPI()
+app=FastAPI(debug=False)
 #security schemes
 bearer_scheme = HTTPBearer()
 
