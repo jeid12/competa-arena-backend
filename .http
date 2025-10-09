@@ -1,0 +1,64 @@
+### 🔐 LOGIN to get JWT (from User Service)
+POST http://localhost:8000/api/auth/login
+Content-Type: application/json
+
+{
+  "username_or_email": "brojeid",
+  "password": "Jeid@2025"
+}
+### Response will include JWT token:
+GET http://localhost:8000/api/token/validate-token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwidXNlcm5hbWUiOiJicm9qZWlkIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzU5Njk2OTQ0LCJ0eXBlIjoiYWNjZXNzIn0.fZckRPXfmWxdquLkU7ShOE_rrksu2um9rLbhEFtG0Go
+
+
+### 🏆 CREATE a Contest (requires Creator/Admin role)
+POST http://localhost:8080/api/contests
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwidXNlcm5hbWUiOiJicm9qZWlkIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzU5Njk2OTQ0LCJ0eXBlIjoiYWNjZXNzIn0.fZckRPXfmWxdquLkU7ShOE_rrksu2um9rLbhEFtG0Go
+Content-Type: application/json
+
+{
+  "title": "October Math Challenge",
+  "description": "A contest to test advanced calculus and number theory skills.",
+  "subject": "Math",
+  "questions": [
+    {
+      "type": "MCQ",
+      "question": "What is 2 + 2?",
+      "options": ["3", "4", "5", "6"],
+      "answer": "4"
+    },
+    {
+      "type": "SHORT_ANSWER",
+      "question": "Define Newton's second law.",
+      "expectedAnswer": "Force equals mass times acceleration"
+    }
+ 
+  ]
+}
+
+### 📚 GET All Contests (public)
+GET http://localhost:8080/api/contests
+
+### 🔍 GET Contest by ID
+GET http://localhost:8080/api/contests/6700a87c2a9b7f001f4b8c22
+
+### ✏️ UPDATE Contest (Creator/Admin)
+PUT http://localhost:8080/api/contests/6700a87c2a9b7f001f4b8c22
+Authorization: Bearer {{JWT_TOKEN}}
+Content-Type: application/json
+
+{
+  "title": "October Math & Physics Challenge",
+  "description": "Updated contest including physics."
+}
+
+### 🗑️ DELETE Contest (Admin only)
+DELETE http://localhost:8080/api/contests/6700a87c2a9b7f001f4b8c22
+Authorization: Bearer {{JWT_TOKEN}}
+
+### 📤 UPLOAD Question Statement (optional Cloudinary integration)
+POST http://localhost:8080/api/contests/upload
+Authorization: Bearer {{JWT_TOKEN}}
+Content-Type: multipart/form-data
+
+file=@./statement.pdf

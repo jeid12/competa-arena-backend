@@ -5,7 +5,7 @@ from schemas.user_schemas import AvatarResponse, ChangePasswordRequest, ForgotPa
 from models.users import User
 from services.user_service import change_password, create_user, get_me, reset_password, send_password_reset_otp, update_avatar, update_me, verify_otp, resend_otp , get_public_profile 
 from rate_limiting import limiter
-from utils.auth import get_current_user
+from utils.auth import decode_access_token, get_current_user
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 security = HTTPBearer()
@@ -88,3 +88,4 @@ async def upload_avatar(
 def public_profile(username: str, db: Session = Depends(get_session)):
     profile = get_public_profile(username, db)
     return profile
+

@@ -25,7 +25,48 @@ services:
     ports:
       - "8000:8000"
   
-  
+  # Contest Service (Spring Boot + MongoDB)
+  contest-service:
+    build:
+      context: ./contest-service
+      dockerfile: Dockerfile
+    container_name: contest_service_container
+    restart: always
+    env_file:
+      - ./user-service/.env
+    depends_on:
+      - contest-mongo
+      - user-services
+    ports:
+      - "8080:8080"
+
+  # MongoDB for Contest Service
+  contest-mongo:
+    image: mongo:7.0
+    container_name: contest-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example  
+    volumes:
+      - contest_mongo_data:/data/db
+
+  # Optional: Mongo Express for MongoDB GUI
+  mongo-express:
+    image: mongo-express:1.0.0
+    container_name: mongo_express
+    restart: always
+    depends_on:
+      - contest-mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_SERVER: contest-mongo
+    ports:
+      - "8081:8081"
 
 volumes:
   user_data:
+  contest_mongo_data:
